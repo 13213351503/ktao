@@ -13,7 +13,6 @@
 		this.$layer = this.$elem.find('.dropdown-layer');
 		
 		this._init();
-	
 	}
 
 	DropDown.prototype = {
@@ -68,7 +67,7 @@
 		js:true,
 		mode:'slideUpDown',
 		delay:200,
-		eventName:'hover'		
+		eventName:''		
 	}
 
 	$.fn.extend({
