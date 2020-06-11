@@ -1,10 +1,3 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-12 18:20:04
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-12 20:09:40
-*/
-
 ;(function($){
 	function DropDown($elem,options){
 		this.$elem = $elem;
@@ -12,12 +5,17 @@
 		this.activeClass = this.$elem.data('active') + '-active';
 		this.$layer = this.$elem.find('.dropdown-layer');
 		
+<<<<<<< HEAD
 		this._init();
+=======
+		this.init();
+	
+>>>>>>> fcad0b7ecf076edce1ad18a2dadabbd10456e3e8
 	}
 
 	DropDown.prototype = {
 		constructor:DropDown,
-		_init:function(){
+		init:function(){
 			//初始化显示隐藏模块
 			this.$layer.showHide(this.options);	
 
@@ -27,7 +25,7 @@
 			}.bind(this));
 
 			//绑定事件
-			//this.$elem.hover(this.show.bind(this),this.hide.bind(this));
+			// this.$elem.hover(this.show.bind(this),this.hide.bind(this));
 			if(this.options.eventName == 'click'){
 				this.$elem.on('click',function(ev){
 					ev.stopPropagation();

@@ -1,10 +1,3 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-12 18:20:04
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-12 19:02:33
-*/
-
 ;(function($){
 	function DropDown($elem,options){
 		this.$elem = $elem;

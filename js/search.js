@@ -1,9 +1,4 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-13 18:30:03
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-14 20:59:57
-*/
+
 ;(function($){
 	var cache = {
 		data:{},
@@ -142,7 +137,7 @@
 				var $this = $(this);
 				var search = $this.data('search');
 				if(!search){//单例模式
-					options  = $.extend(Search.DEFAULTS,options);
+					options  = $.extend({},Search.DEFAULTS,options);
 					search = new Search($(this),options);
 					$this.data('search',search);
 				}

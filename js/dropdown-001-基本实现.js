@@ -1,10 +1,3 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-12 18:20:04
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-12 18:43:59
-*/
-
 ;(function($){
 	$.fn.extend({
 		dropdown:function(){
