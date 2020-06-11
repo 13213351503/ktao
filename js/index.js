@@ -25,7 +25,6 @@
 		
 		//如果有请求地址,发送请求获取数据
 		$.getJSON(loadUrl,function(data){
-			console.log(data);
 			var html = '';
 			for(var i = 0;i<data.length;i++){
 				html += '<li><a href="'+data[i].url+'" class="menu-item">'+data[i].name+'</a></li>';

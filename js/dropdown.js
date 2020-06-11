@@ -1,10 +1,3 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-12 18:20:04
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-12 20:09:40
-*/
-
 ;(function($){
 	function DropDown($elem,options){
 		this.$elem = $elem;
@@ -68,7 +61,7 @@
 		js:true,
 		mode:'slideUpDown',
 		delay:200,
-		eventName:'hover'		
+		eventName:''		
 	}
 
 	$.fn.extend({
