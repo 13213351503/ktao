@@ -5,6 +5,7 @@
 		this.$searchForm = this.$elem.find('.search-form');
 		this.$searchInput = this.$elem.find('.search-input');
 		this.$searchBtn = this.$elem.find('.search-btn');
+		this.$searchLayer = this.$elem.find('.search-layer');
 		
 		this.init();
 		if(this.options.autocomplete){
@@ -24,23 +25,62 @@
 			if(!this.getInputVal()){
 				return false;
 			};
-			this.$searchForm.trigger('submit');
+			//触发提交事件
+			this.$searchForm.trigger('submit');	
 		},
 		getInputVal:function(){
 			//获取输入框的值进行判断
 			return $.trim(this.$searchInput.val())
 		},
 		autocomplete:function(){
-			this.$searchInput.on('input',function(){
-				console.log(this.getInputVal());
+			//监听输入时触发事件，并调用getData函数
+			this.$searchInput.on('input',$.proxy(this.getData,this));
+		},
+		getData:function(){
+			//如果输入框的值为空，停止发送请求
+			if(this.getInputVal() == ''){
+				return;
+			}
+			//如果有值就向淘宝发送ajax请求
+			$.ajax({
+				url:this.options.url + this.getInputVal(),
+				dataType:'jsonp',
+				jsonp:'callback'
+			})
+			.done(function(data){
+				console.log(data);
+				//1.生成HTML结构
+				var html = '';
+				for(var i=0;i<data.result.length;i++){
+					html += '<li>'+data.result[i][0]+'</li>';
+				}
+				//2.将HTML插入到下拉菜单中
+				this.appendHtml(html)
+				//3.显示下拉菜单
+				this.showLayer();
 			}.bind(this))
+			.fail(function(err){
+				console.log(err);
+			})
+		},
+		appendHtml:function(html){
+			this.$searchLayer.html(html);
+		},
+		showLayer:function(){
+			this.$searchLayer.showHide('show')
 		}
+
+		autocomplete:function(){
+			//监听输入时触发事件，并调用getData函数
+			this.$searchInput.on('input',$.proxy(this.getData,this));
+		},
 	};
 
 	Search.DEFAULTS = {
-		autocomplete:true
+		autocomplete:true,	//默认输入时有下拉菜单
+		url:'https://suggest.taobao.com/sug?code=utf-8&q='		//默认请求固定地址
 	}
-
+	//https://suggest.taobao.com/sug?code=utf-8&q=dd&_ksTS=1591882631944_958&callback=jsonp959&k=1&area=c2c&bucketid=7
 	$.fn.extend({
 		Search:function(options){
 			return this.each(function(){

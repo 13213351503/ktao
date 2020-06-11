@@ -34,21 +34,7 @@
 			
 		}
 		
-<<<<<<< HEAD
-		//如果有请求地址,发送请求获取数据
-		$.getJSON(loadUrl,function(data){
-			var html = '';
-			for(var i = 0;i<data.length;i++){
-				html += '<li><a href="'+data[i].url+'" class="menu-item">'+data[i].name+'</a></li>';
-			}
-			//模拟网络延时
-			setTimeout(function(){
-				$this.find('.dropdown-layer').html(html);
-				$this.data('isLoaded',true);
-			},1000);
-		});
-=======
->>>>>>> fcad0b7ecf076edce1ad18a2dadabbd10456e3e8
+
 
 	});
 	
@@ -65,7 +51,8 @@
 	var $search = $('.search');
 	
 	$search.Search({
-		// autocomplete:true
+		js:true,
+		mode:'slideUpDown'
 	});
 	
 	// $search

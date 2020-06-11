@@ -5,12 +5,9 @@
 		this.activeClass = this.$elem.data('active') + '-active';
 		this.$layer = this.$elem.find('.dropdown-layer');
 		
-<<<<<<< HEAD
-		this._init();
-=======
+
 		this.init();
 	
->>>>>>> fcad0b7ecf076edce1ad18a2dadabbd10456e3e8
 	}
 
 	DropDown.prototype = {
