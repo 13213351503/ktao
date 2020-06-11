@@ -1,9 +1,3 @@
-/*
-* @Author: TomChen
-* @Date:   2018-06-10 15:52:54
-* @Last Modified by:   TomChen
-* @Last Modified time: 2018-06-10 16:03:28
-*/
 ;(function(w){
 	// console.log(document.body.style.transition);
 	var transitionEventName = {

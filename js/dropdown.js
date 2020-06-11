@@ -5,13 +5,13 @@
 		this.activeClass = this.$elem.data('active') + '-active';
 		this.$layer = this.$elem.find('.dropdown-layer');
 		
-		this._init();
+		this.init();
 	
 	}
 
 	DropDown.prototype = {
 		constructor:DropDown,
-		_init:function(){
+		init:function(){
 			//初始化显示隐藏模块
 			this.$layer.showHide(this.options);	
 
@@ -21,7 +21,7 @@
 			}.bind(this));
 
 			//绑定事件
-			//this.$elem.hover(this.show.bind(this),this.hide.bind(this));
+			// this.$elem.hover(this.show.bind(this),this.hide.bind(this));
 			if(this.options.eventName == 'click'){
 				this.$elem.on('click',function(ev){
 					ev.stopPropagation();
