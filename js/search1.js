@@ -7,8 +7,9 @@
 		this.$searchBtn = this.$elem.find('.search-btn');
 		this.$searchLayer = this.$elem.find('.search-layer');
 		
+		this.timer = null;
 		this.init();
-
+		//判断是否显示下拉层
 		if(this.options.autocomplete){
 			// console.log('aa')
 			this.autocomplete();
@@ -38,7 +39,18 @@
 			//初始化显示隐藏插件
 			this.$searchLayer.showHide(this.options);
 			//监听输入时触发事件，并调用getData函数
-			this.$searchInput.on('input',$.proxy(this.getData,this));
+			this.$searchInput.on('input',function(){
+				//开启一个定时器，防止在连续输入的时候多次向服务器请求数据
+				if(this.options.delatGetData){				
+					clearTimeout(this.timer);
+					this.timer = setTimeout(function(){
+						this.getData();
+					}.bind(this),this.options.delatGetData)
+				}else{
+					this.getData();
+				}
+			}.bind(this));
+			
 			//监听页面其他地方点击事件,点击页面其他地方，下拉框消失
 			$(document).on('click',function(){
 				this.hideLayer();
@@ -57,13 +69,18 @@
 			}.bind(this));
 
 			//点击每一个li取提交数据的方法
+			var _this = this;
 			this.$elem.on('click','.search-item',function(){
 				//获取当前点击项的值
-				console.log(this);
-				var val = $(this).html()
+				var val = $(this).html()	//这里的this不需要改变，如果从外部传入不合适
+				//把数据赋给输入框
+				_this.setInputVal(val);
+				//提交数据
+				_this.submit();
 			})
 		},
 		getData:function(){
+			console.log('getdata')
 			//如果输入框的值为空，停止发送请求，并且收回下拉框
 			if(this.getInputVal() == ''){
 				this.hideLayer();
@@ -106,13 +123,16 @@
 			//3.隐藏下拉菜单
 			this.$searchLayer.showHide('hide')
 		},
-
+		setInputVal:function(val){
+			this.$searchInput.val(val);
+		}
 		
 	};
 
 	Search.DEFAULTS = {
 		autocomplete:true,	//默认输入时有下拉菜单
-		url:'https://suggest.taobao.com/sug?code=utf-8&q='		//默认请求固定地址
+		url:'https://suggest.taobao.com/sug?code=utf-8&q=',		//默认请求固定地址
+		delatGetData:300
 	}
 	//https://suggest.taobao.com/sug?code=utf-8&q=dd&_ksTS=1591882631944_958&callback=jsonp959&k=1&area=c2c&bucketid=7
 	$.fn.extend({
