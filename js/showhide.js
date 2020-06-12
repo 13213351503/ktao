@@ -330,7 +330,7 @@
 			var defaults = {
 				css3:false,
 				js:false,
-				mode:'fade'
+				mode:'slideLeftRight'
 			}
 			this.each(function(){
 				var $elem = $(this);

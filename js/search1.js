@@ -8,6 +8,7 @@
 		this.$searchLayer = this.$elem.find('.search-layer');
 		
 		this.init();
+
 		if(this.options.autocomplete){
 			// console.log('aa')
 			this.autocomplete();
@@ -23,6 +24,7 @@
 		submit:function(){
 			//如果输入框的值为空，不提交数据
 			if(!this.getInputVal()){
+
 				return false;
 			};
 			//触发提交事件
@@ -33,12 +35,38 @@
 			return $.trim(this.$searchInput.val())
 		},
 		autocomplete:function(){
+			//初始化显示隐藏插件
+			this.$searchLayer.showHide(this.options);
 			//监听输入时触发事件，并调用getData函数
 			this.$searchInput.on('input',$.proxy(this.getData,this));
+			//监听页面其他地方点击事件,点击页面其他地方，下拉框消失
+			$(document).on('click',function(){
+				this.hideLayer();
+			}.bind(this));
+			//点击事件阻止冒泡
+			this.$searchInput.on('click',function(ev){
+				ev.stopPropagation();
+			});
+			//输入框获取焦点的时候显示下拉
+			this.$searchInput.on('focus',function(){
+				//如果输入框没有值，不执行下拉
+				if(this.getInputVal()){
+					this.showLayer();
+				}
+				
+			}.bind(this));
+
+			//点击每一个li取提交数据的方法
+			this.$elem.on('click','.search-item',function(){
+				//获取当前点击项的值
+				console.log(this);
+				var val = $(this).html()
+			})
 		},
 		getData:function(){
-			//如果输入框的值为空，停止发送请求
+			//如果输入框的值为空，停止发送请求，并且收回下拉框
 			if(this.getInputVal() == ''){
+				this.hideLayer();
 				return;
 			}
 			//如果有值就向淘宝发送ajax请求
@@ -48,32 +76,38 @@
 				jsonp:'callback'
 			})
 			.done(function(data){
-				console.log(data);
-				//1.生成HTML结构
-				var html = '';
-				for(var i=0;i<data.result.length;i++){
-					html += '<li>'+data.result[i][0]+'</li>';
-				}
-				//2.将HTML插入到下拉菜单中
-				this.appendHtml(html)
-				//3.显示下拉菜单
-				this.showLayer();
+				// console.log(data);
+				// //1.生成HTML结构
+				// var html = '';
+				// for(var i=0;i<data.result.length;i++){
+				// 	html += '<li>'+data.result[i][0]+'</li>';
+				// }
+				// //2.将HTML插入到下拉菜单中
+				// this.appendHtml(html)
+				// //3.显示下拉菜单
+				// this.showLayer();
+				this.$elem.trigger('getSearchData',[data]);
 			}.bind(this))
+
+
 			.fail(function(err){
-				console.log(err);
+				this.$elem.trigger('getNoSearchData');
 			})
 		},
 		appendHtml:function(html){
+			//2.将HTML插入到下拉菜单中
 			this.$searchLayer.html(html);
 		},
 		showLayer:function(){
+			//3.显示下拉菜单
 			this.$searchLayer.showHide('show')
-		}
-
-		autocomplete:function(){
-			//监听输入时触发事件，并调用getData函数
-			this.$searchInput.on('input',$.proxy(this.getData,this));
 		},
+		hideLayer:function(){
+			//3.隐藏下拉菜单
+			this.$searchLayer.showHide('hide')
+		},
+
+		
 	};
 
 	Search.DEFAULTS = {
@@ -82,17 +116,17 @@
 	}
 	//https://suggest.taobao.com/sug?code=utf-8&q=dd&_ksTS=1591882631944_958&callback=jsonp959&k=1&area=c2c&bucketid=7
 	$.fn.extend({
-		Search:function(options){
+		search:function(options,val){
 			return this.each(function(){
-				var $this = $(this);
-				var search = $this.data('Search');
+				var $elem = $(this);
+				var search = $elem.data('search');
 				if(!search){//单例模式
 					options  = $.extend({},Search.DEFAULTS,options);
-					search = new Search($(this),options);
-					$this.data('search',Search);
+					search = new Search($elem,options);
+					$elem.data('search',search);
 				}
 				if(typeof search[options] == 'function'){
-					search[options]();
+					search[options](val);
 				}
 			});
 		}

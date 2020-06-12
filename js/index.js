@@ -39,7 +39,7 @@
 	});
 	
 	$dropdown.dropdown({
-		css3:false,
+		// css3:false,
 		js:true,
 		mode:'slideUpDown'
 	});
@@ -50,10 +50,35 @@
 
 	var $search = $('.search');
 	
-	$search.Search({
+	$search.search({
 		js:true,
 		mode:'slideUpDown'
 	});
+
+	//得到数据并显示下拉菜单
+	$search.on('getSearchData',function(ev,data){
+		var $elem = $(this);
+		//1.生成HTML结构
+		var html = getSearchLayer(data,10);
+		//2.将HTML插入到下拉菜单中
+		$elem.search('appendHtml',html);
+		//3.显示下拉菜单
+		$elem.search('showLayer');
+	});
+	//隐藏下拉层
+	$search.on('getNoSearchData',function(){
+		$elem.search('appendHtml','');
+		$elem.search('hideLayer');
+	});
+	//用来判定显示几条数据函数
+	function getSearchLayer(data,max){
+		var html = '';
+		for(var i=0;i<data.result.length;i++){
+			if(i>=max) break;
+			html += '<li class="search-item">'+data.result[i][0]+'</li>';
+		};
+		return html
+	}
 	
 	// $search
 	// .on('getData',function(ev,data){

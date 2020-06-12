@@ -17,7 +17,7 @@
 	.link{
 		color: #4d555d;
 	}
-	.link:hover{
+	a.link:hover{
 		color: #ea675a;
 	}
 /*公共连接结束*/
@@ -66,9 +66,13 @@
 		background: url(../images/loading.gif) no-repeat;
 		margin:20px;
 	}
-	[class*='-active'] .dropdown-arrow{
+	/*[class*='-active'] .dropdown-arrow{
 		transform: rotate(180deg);
+	}*/
+	.menu-active .dropdown-icon{
+		transform: rotateZ(180deg);
 	}
+
 /*下拉菜单共同样式结束*/
 /*显示隐藏公共样式开始*/
 		.fadeOut{

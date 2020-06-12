@@ -58,9 +58,9 @@
 	};
 
 	DropDown.DEFAULTS = {
-		css3:false,
+		// css3:false,
 		js:true,
-		mode:'slideUpDown',
+		mode:'slideLeftRight',
 		delay:200,
 		eventName:''		
 	}
