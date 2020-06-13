@@ -1,13 +1,29 @@
 ;(function($){
+	//缓存机制
+	cache = {
+		data:{},//存放缓存数据
+		count:0,//缓存个数
+		addData:function(key,val){//添加缓存
+			this.data[key] = val;
+			this.count++;
+		},
+		getData:function(key){	//获取缓存
+			return this.data[key]
+		}
+	};
+
+
+
 	function Search($elem,options){
 		this.$elem = $elem;
 		this.options = options;
-		this.$searchForm = this.$elem.find('.search-form');
+		this.$searchForm = this.$elem.find('#search-form');
 		this.$searchInput = this.$elem.find('.search-input');
 		this.$searchBtn = this.$elem.find('.search-btn');
 		this.$searchLayer = this.$elem.find('.search-layer');
 		
 		this.timer = null;
+		this.jqXHR = null;
 		this.init();
 		//判断是否显示下拉层
 		if(this.options.autocomplete){
@@ -80,35 +96,47 @@
 			})
 		},
 		getData:function(){
-			console.log('getdata')
+			// console.log('getdata')
 			//如果输入框的值为空，停止发送请求，并且收回下拉框
 			if(this.getInputVal() == ''){
 				this.hideLayer();
 				return;
 			}
+			//终止之前的请求，获取最新数据
+			if(this.jqXHR){
+				this.jqXHR.abort();
+			}
+			//判断是否有缓存
+			if(cache.getData(this.getInputVal())){
+				//把缓存的值存下来
+				// console.log(cache.getData(this.getInputVal()));
+				var cacheData = cache.getData(this.getInputVal());
+				// //如果有缓存显示下拉菜单，并把缓存当参数传进去	
+				this.$elem.trigger('getSearchData',[cacheData]);
+				//有缓存就停止向下继续进行
+				return;
+			}
+			console.log('will data')
 			//如果有值就向淘宝发送ajax请求
-			$.ajax({
+			this.jqXHR = $.ajax({
 				url:this.options.url + this.getInputVal(),
 				dataType:'jsonp',
 				jsonp:'callback'
 			})
 			.done(function(data){
-				// console.log(data);
-				// //1.生成HTML结构
-				// var html = '';
-				// for(var i=0;i<data.result.length;i++){
-				// 	html += '<li>'+data.result[i][0]+'</li>';
-				// }
-				// //2.将HTML插入到下拉菜单中
-				// this.appendHtml(html)
-				// //3.显示下拉菜单
-				// this.showLayer();
 				this.$elem.trigger('getSearchData',[data]);
+				//将获取的缓存数据存下来
+				cache.addData(this.getInputVal(),data);
 			}.bind(this))
 
 
 			.fail(function(err){
 				this.$elem.trigger('getNoSearchData');
+			})
+
+			//不管成功失败最后都会走进always中，只要走进always中就代表请求完成，
+			.always(function(){
+				this.jqXHR = null;
 			})
 		},
 		appendHtml:function(html){

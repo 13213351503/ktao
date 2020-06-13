@@ -298,14 +298,14 @@
 
 	//根据参数决定使用什么方式的显示和隐藏
 	function showHide($elem,options){
-		/*
-			slient/css3/js
-			{
-				css3:true/false
-				js:true/fase
-				mode:'slideUpDown'
-			}
-		*/
+		
+			// slient/css3/js
+			// {
+			// 	css3:true/false
+			// 	js:true/fase
+			// 	mode:'slideUpDown'
+			// }
+		
 		
 		var showHideFn = null;
 
