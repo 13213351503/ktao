@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>001-移动基础.html</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/index.css">
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+
+		}
+		button{
+			width: 60px;
+			height: 40px;
+		}
+		.box{
+			width: 100px;
+			height: 100px;
+			background: green;
+			position: absolute;
+			top: 100px;
+			left: 0px;
+		}
+	</style>
+</head>
+<body>
+	<button>还原</button>
+	<button>移动</button>
+	<div class="box"></div>
+</body>
+<script src="js/jquery-1.12.4.js"></script>
+<script>
+	function Slient($elem){
+		this.$elem = $elem;
+		//获取初始值
+		this.currentX = parseInt(this.$elem.css('left'));
+		this.currentY = parseInt(this.$elem.css('top'));
+	}
+	Slient.prototype = {
+		to:function(x,y){
+			//每次判断是否达到目标值
+			if(this.currentX == x && this.currentY == y) return;
+			this.$elem.trigger('move');		//自定义事件移入前
+			this.$elem.css({
+				top:y,
+				left:x
+			});
+			this.$elem.trigger('moved');	//自定义事件移入后
+			//更新初始值
+			this.currentX = x;
+			this.currentY = y;
+		},
+	}
+
+	//js方法
+	function Js($elem){
+		this.$elem = $elem;
+		//获取初始值
+		this.currentX = parseInt(this.$elem.css('left'));
+		this.currentY = parseInt(this.$elem.css('top'));
+	}
+	Js.prototype = {
+		to:function(x,y){
+			//每次判断是否达到目标值
+			if(this.currentX == x && this.currentY == y) return;
+			this.$elem.trigger('move');		//自定义事件移入前
+			this.$elem
+			.stop()
+			.animate({
+				top:y,
+				left:x
+			},function(){
+				//自定义事件移入后
+				this.$elem.trigger('moved');	
+			}.bind(this));
+			//更新初始值
+			this.currentX = x;
+			this.currentY = y;
+		},
+	}
+</script>
+<script>
+	var $box = $('.box');
+	var $elem = new Js($box);
+	//监听自定义事件
+	$box.on('move moved',function(ev){
+		console.log(ev.type)
+	})
+
+
+	$('button').eq(0).on('click',function(){
+		$elem.to(0,100);
+	})
+	$('button').eq(1).on('click',function(){
+		$elem.to(200,200);
+	})
+</script>
+</html>

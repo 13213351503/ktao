@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>002-移动共通.html</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/index.css">
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+
+		}
+		button{
+			width: 60px;
+			height: 40px;
+		}
+		.box{
+			width: 100px;
+			height: 100px;
+			background: green;
+			position: absolute;
+			top: 100px;
+			left: 0px;
+		}
+	</style>
+</head>
+<body>
+	<button>还原</button>
+	<button>移动</button>
+	<div class="box"></div>
+</body>
+<script src="js/jquery-1.12.4.js"></script>
+<script>
+	function init($elem){
+		this.$elem = $elem;
+		this.$elem.removeClass('transition');
+		//获取初始值
+		this.currentX = parseInt(this.$elem.css('left'));
+		this.currentY = parseInt(this.$elem.css('top'));
+	};
+	function to(x,y,callback){
+		if(this.currentX == x && this.currentY == y) return;
+		this.$elem.trigger('move');		//自定义事件移入前
+		callback();
+		//更新初始值
+		this.currentX = x;
+		this.currentY = y;
+	}
+
+
+
+	//slient方法
+	function Slient($elem){
+		init.call(this,$elem);
+	}
+	Slient.prototype = {
+		to:function(x,y){
+			to.call(this,x,y,function(){
+				this.$elem.css({
+					top:y,
+					left:x
+				});
+				this.$elem.trigger('moved');
+			}.bind(this));
+		},
+	}
+
+	//js方法
+	function Js($elem){
+		init.call(this,$elem);
+	}
+	Js.prototype = {
+		to:function(x,y){
+			to.call(this,x,y,function(){
+				this.$elem
+				.stop()
+				.animate({
+					top:y,
+					left:x
+				},function(){
+					//自定义事件移入后
+					this.$elem.trigger('moved');	
+				}.bind(this));
+			}.bind(this));
+		}
+	}
+</script>
+<script>
+	var $box = $('.box');
+	var $elem = new Js($box);
+	// var $elem = new Slient($box);
+	//监听自定义事件
+	$box.on('move moved',function(ev){
+		console.log(ev.type)
+	})
+
+
+	$('button').eq(0).on('click',function(){
+		$elem.to(0,100);
+	})
+	$('button').eq(1).on('click',function(){
+		$elem.to(200,200);
+	})
+</script>
+</html>
