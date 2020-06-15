@@ -19,7 +19,7 @@
 	}
 
 /*顶部下拉菜单开始*/
-	var $dropdown = $('.dropdown');
+	var $dropdown = $('.nav-site .dropdown');
 	
 	$dropdown.on('dropdown-show dropdown-shown dropdown-hide dropdown-hidden',function(ev){
 		if(ev.type == 'dropdown-shown'){
@@ -46,9 +46,6 @@
 					},500);
 				});
 			};
-			
-			//如果有请求地址,发送请求获取数据
-			
 		}
 	});
 	
@@ -98,18 +95,12 @@
 /*搜索框结束*/	
 
 // 焦点区域分类逻辑列表区域-----------------------------------------开始
-	// var $categoryDropdown = $('.focus .dropdown');
-	// $categoryDropdown.dropdown({
-	// 	js:true,
-	// 	mode:'slideLeftRight'
-	// });
-
+	
 	
 	var $categoryDropdown = $('.focus .dropdown');
 	$categoryDropdown.dropdown({
 		js:true,
 		mode:'slideLeftRight',
-		eventName:''
 	});
 	//加载分类列表数据
 	$categoryDropdown.on('dropdown-show dropdown-shown dropdown-hide dropdown-hidden',function(ev){
@@ -148,4 +139,10 @@
 
 // 焦点区域分类逻辑列表区域-----------------------------------------结束
 
+
+// 焦点区域轮播图区域-----------------------------------------开始
+	var $coursel = $('.carousel .carousel-wrap');
+	$coursel.coursel({});
+
+// 焦点区域轮播图区域-----------------------------------------结束
 })(jQuery);

@@ -49,110 +49,6 @@
 		}
 	};
 
-	//css3实现显示隐藏,动画的实现用过渡
-	// var css3 = {	
-	// 	//淡入淡出的显示隐藏
-	// 	fade:{
-	// 		init:function($elem){
-	// 			css3._init($elem,'fadeOut'); 
-	// 		},				
-	// 		show:function($elem){
-	// 			css3._show($elem,'fadeOut');
-	// 		},
-	// 		hide:function($elem){
-	// 			css3._hide($elem,'fadeOut');
-	// 		}
-	// 	},
-	// 	//上下卷入卷出
-	// 	slideUpDown:{
-	// 		init:function($elem){
-	// 			$elem.height($elem.height());
-	// 			css3._init($elem,'slideUpDownCollapse'); 
-	// 		},
-	// 		show:function($elem){
-	// 			css3._show($elem,'slideUpDownCollapse');
-	// 		},
-	// 		hide:function($elem){
-	// 			css3._hide($elem,'slideUpDownCollapse');
-	// 		}				
-	// 	},
-	// 	//左右卷入卷出
-	// 	slideLeftRight:{
-	// 		init:function($elem){
-	// 			$elem.width($elem.width());
-	// 			css3._init($elem,'slideLeftRightCollapse'); 
-	// 		},
-	// 		show:function($elem){
-	// 			css3._show($elem,'slideLeftRightCollapse');
-	// 		},
-	// 		hide:function($elem){
-	// 			css3._hide($elem,'slideLeftRightCollapse');
-	// 		}	
-	// 	},
-	// 	//淡入淡出上下卷入卷出
-	// 	fadeSlideUpDown:{
-	// 		init:function($elem){
-	// 			$elem.height($elem.height());
-	// 			css3._init($elem,'fadeOut slideUpDownCollapse'); 
-	// 		},
-	// 		show:function($elem){
-	// 			css3._show($elem,'fadeOut slideUpDownCollapse');
-	// 		},
-	// 		hide:function($elem){
-	// 			css3._hide($elem,'fadeOut slideUpDownCollapse');
-	// 		}
-	// 	},
-	// 	//淡入淡出左右卷入卷出
-	// 	fadeSlideLeftRight:{
-	// 		init:function($elem){
-	// 			$elem.width($elem.width());
-	// 			css3._init($elem,'fadeOut slideLeftRightCollapse'); 
-	// 		},
-	// 		show:function($elem){
-	// 			css3._show($elem,'fadeOut slideLeftRightCollapse');
-	// 		},
-	// 		hide:function($elem){
-	// 			css3._hide($elem,'fadeOut slideLeftRightCollapse');
-	// 		}
-	// 	},		
-	// };
-
-	// css3._init = function($elem,className){
-	// 	$elem.addClass('transition');
-	// 	init($elem,function(){
-	// 		$elem.addClass(className);
-	// 	});			
-	// }
-	// css3._show = function($elem,className){
-	// 	show($elem,function(){
-	// 		$elem.show();//dispaly=block
-	// 		$elem
-	// 		.off(kuazhu.transition.end)//为了解决用户频繁点击触发事件多次执行
-	// 		.one(kuazhu.transition.end,function(){//用one绑定事件是为了事件只触发一次后就移除
-	// 			$elem.trigger('shown').data('status','shown');
-	// 		});
-
-	// 		//此处添加定时器是为了等待元素完全由display:none 变为display:block
-	// 		setTimeout(function(){
-	// 			$elem.removeClass(className);
-	// 		},20);					
-	// 	});		
-	// }
-	// css3._hide = function($elem,className){
-	// 	hide($elem,function(){
-	// 		//过渡完成后触发
-	// 		$elem
-	// 		.off(kuazhu.transition.end)
-	// 		.one(kuazhu.transition.end,function(){
-	// 			// console.log('transitionend');
-	// 			$elem.hide();//display:none
-	// 			$elem.trigger('hidden').data('status','hidden');
-	// 		});
-			
-	// 		//触发了过渡	
-	// 		$elem.addClass(className);	
-	// 	});			
-	// }
 	//js相关显示和隐藏
 	var js = {
 		//淡入淡出的显示隐藏
@@ -163,7 +59,7 @@
 			show:function($elem){
 				js._show($elem,'fadeIn');
 			},
-			hide:function(){
+			hide:function($elem){
 				js._hide($elem,'fadeOut');
 			}
 		},
@@ -299,12 +195,7 @@
 	//根据参数决定使用什么方式的显示和隐藏
 	function showHide($elem,options){
 		
-			// slient/css3/js
-			// {
-			// 	css3:true/false
-			// 	js:true/fase
-			// 	mode:'slideUpDown'
-			// }
+			
 		
 		
 		var showHideFn = null;

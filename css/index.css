@@ -251,11 +251,6 @@
 		width: 728px;
 		height: 504px;
 	}
-	.focus .carousel-wrap,
-	.focus .carousel-wrap .carousel-item img {
-		width: 728px;
-		height: 504px;
-	}
 	.carousel-wrap{
 		position: relative;
 		overflow: hidden;
