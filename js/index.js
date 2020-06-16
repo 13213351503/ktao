@@ -142,6 +142,9 @@
 
 // 焦点区域轮播图区域-----------------------------------------开始
 	var $coursel = $('.carousel .carousel-wrap');
+	$coursel.on('coursel-show',function(ev,index,elem){
+		console.log(index,elem);
+	})
 	$coursel.coursel({});
 
 // 焦点区域轮播图区域-----------------------------------------结束

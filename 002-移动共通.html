@@ -33,64 +33,12 @@
 	<div class="box"></div>
 </body>
 <script src="js/jquery-1.12.4.js"></script>
-<script>
-	function init($elem){
-		this.$elem = $elem;
-		this.$elem.removeClass('transition');
-		//获取初始值
-		this.currentX = parseInt(this.$elem.css('left'));
-		this.currentY = parseInt(this.$elem.css('top'));
-	};
-	function to(x,y,callback){
-		if(this.currentX == x && this.currentY == y) return;
-		this.$elem.trigger('move');		//自定义事件移入前
-		callback();
-		//更新初始值
-		this.currentX = x;
-		this.currentY = y;
-	}
-
-
-
-	//slient方法
-	function Slient($elem){
-		init.call(this,$elem);
-	}
-	Slient.prototype = {
-		to:function(x,y){
-			to.call(this,x,y,function(){
-				this.$elem.css({
-					top:y,
-					left:x
-				});
-				this.$elem.trigger('moved');
-			}.bind(this));
-		},
-	}
-
-	//js方法
-	function Js($elem){
-		init.call(this,$elem);
-	}
-	Js.prototype = {
-		to:function(x,y){
-			to.call(this,x,y,function(){
-				this.$elem
-				.stop()
-				.animate({
-					top:y,
-					left:x
-				},function(){
-					//自定义事件移入后
-					this.$elem.trigger('moved');	
-				}.bind(this));
-			}.bind(this));
-		}
-	}
-</script>
+<script src="js/move.js"></script>
 <script>
 	var $box = $('.box');
-	var $elem = new Js($box);
+	var move = $box.move({
+		js:true
+	})
 	// var $elem = new Slient($box);
 	//监听自定义事件
 	$box.on('move moved',function(ev){
@@ -99,10 +47,10 @@
 
 
 	$('button').eq(0).on('click',function(){
-		$elem.to(0,100);
+		move.move('to',0,100);
 	})
 	$('button').eq(1).on('click',function(){
-		$elem.to(200,200);
+		move.move('to',300,300);
 	})
 </script>
 </html>
