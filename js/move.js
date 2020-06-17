@@ -34,7 +34,6 @@
 	//js方法
 	function Js($elem){
 		init.call(this,$elem);
-		console.log(this.currentX,this.currentY)
 	}
 	Js.prototype = {
 		to:function(x,y){

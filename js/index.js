@@ -18,6 +18,25 @@
 		}
 	}
 
+
+	//加载图片
+	function loadImg(imgUrl,success,error){
+		var img = new Image();
+		img.onload = function(){
+			success(imgUrl);
+		};
+		img.onerror = function(){
+			error();
+		};
+
+		//模拟网络延迟
+		setTimeout(function(){
+			img.src = imgUrl;
+		},300)
+		
+	}
+
+
 /*顶部下拉菜单开始*/
 	var $dropdown = $('.nav-site .dropdown');
 	
@@ -142,10 +161,44 @@
 
 // 焦点区域轮播图区域-----------------------------------------开始
 	var $coursel = $('.carousel .carousel-wrap');
-	$coursel.on('coursel-show',function(ev,index,elem){
-		console.log(index,elem);
+	var item = {};	//定义一个对象用来记录加载过的每一张图片
+	var totalLoadedNum = 0;	//定义未加载的图片个数为0，每次加载完毕+1
+	var totalNum = $coursel.find('.carousel-img').length;	//找到所有图片的个数
+	var fnLoaded = null;	//匿名函数
+	//开始加载
+	$coursel.on('coursel-show',fnLoaded = function(ev,index,elem){
+		console.log('aa');
+		if(!item[index]){
+			$coursel.trigger('coursel-load',[index,elem])
+		}
+	})
+	//执行加载
+	$coursel.on('coursel-load',function(ev,index,elem){
+		var $elem = $(elem);					//包装成jquery对象
+		var $img = $elem.find('.carousel-img');	//找到每个图片
+		var imgUrl = $img.data('src');			//获取图片的地址
+		loadImg(imgUrl,function(imgUrlg){
+			$img.attr('src',imgUrl)
+		},function(){
+			$img.attr('src','images/focus-carousel/placeholder.png')
+		});
+		item[index] = 'loaded';
+		totalLoadedNum++;
+		//判断是否所有的图片都加载完毕，如果加载完毕移除监听事件
+		if(totalLoadedNum == totalNum){
+			$coursel.trigger('coursel-loaded')
+		}
+	})
+	//加载完毕
+	$coursel.on('coursel-loaded',function(){
+		$coursel.off('coursel-show',fnLoaded);
 	})
 	$coursel.coursel({});
 
 // 焦点区域轮播图区域-----------------------------------------结束
+
+// 今日热销区域-----------------------------------------开始
+	var $todayCoursel = $('.todays .carousel-wrap');
+	$todayCoursel.coursel({});
+// 今日热销区域-----------------------------------------结束
 })(jQuery);

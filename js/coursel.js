@@ -16,6 +16,9 @@
 		constructor:Coursel,
 		init:function(){
 			var _this = this;
+			//懒加载默认加载第一张图片
+			this.$elem.trigger('coursel-show',[this.now,this.$courselItem[this.now]]);
+
 			if(this.options.slide){
 				//1.隐藏所有图片，显示当前图片
 				this.$elem.addClass('slide');
