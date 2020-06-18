@@ -145,7 +145,7 @@
 
 	Coursel.DEFAULT = {
 		slide:true,
-		activeIndex:0,
+		activeIndex:1,
 		js:true,
 		mode:'fade',
 		autotime:0

@@ -155,50 +155,63 @@
 
 
 
-
 // 焦点区域分类逻辑列表区域-----------------------------------------结束
 
 
 // 焦点区域轮播图区域-----------------------------------------开始
+
+	//今日焦点和轮播图封装
+	function courselLazyLoad($elem){
+		$elem.item = {};	//定义一个对象用来记录加载过的每一张图片
+		$elem.totalLoadedNum = 0;	//定义未加载的图片个数为0，每次加载完毕+1
+		$elem.totalNum = $coursel.find('.carousel-img').length;	//找到所有图片的个数
+		$elem.fnLoaded = null;	//匿名函数
+		//开始加载
+		$elem.on('coursel-show',$elem.fnLoaded = function(ev,index,elem){
+			if(!$elem.item[index]){
+				$elem.trigger('coursel-load',[index,elem])
+			}
+		})
+		//执行加载
+		$elem.on('coursel-load',function(ev,index,elem){
+			var $this = $(elem);					//包装成jquery对象
+			var $imgs = $this.find('.carousel-img');	//找到每个图片
+			$imgs.each(function(){
+				var $img = $(this);
+				console.log($img);
+				var imgUrl = $img.data('src');			//获取图片的地址
+				loadImg(imgUrl,function(imgUrlg){
+					$img.attr('src',imgUrl)
+					console.log(imgUrl);
+
+				},function(){
+					$img.attr('src','images/focus-carousel/placeholder.png')
+				});
+				$elem.item[index] = 'loaded';
+				$elem.totalLoadedNum++;
+				//判断是否所有的图片都加载完毕，如果加载完毕移除监听事件
+				if($elem.totalLoadedNum == $elem.totalNum){
+					$elem.trigger('coursel-loaded')
+				}
+			})
+			
+		})
+		//加载完毕
+		$elem.on('coursel-loaded',function(){
+			$elem.off('coursel-show',$elem.fnLoaded);
+		})
+	}
+
+
 	var $coursel = $('.carousel .carousel-wrap');
-	var item = {};	//定义一个对象用来记录加载过的每一张图片
-	var totalLoadedNum = 0;	//定义未加载的图片个数为0，每次加载完毕+1
-	var totalNum = $coursel.find('.carousel-img').length;	//找到所有图片的个数
-	var fnLoaded = null;	//匿名函数
-	//开始加载
-	$coursel.on('coursel-show',fnLoaded = function(ev,index,elem){
-		console.log('aa');
-		if(!item[index]){
-			$coursel.trigger('coursel-load',[index,elem])
-		}
-	})
-	//执行加载
-	$coursel.on('coursel-load',function(ev,index,elem){
-		var $elem = $(elem);					//包装成jquery对象
-		var $img = $elem.find('.carousel-img');	//找到每个图片
-		var imgUrl = $img.data('src');			//获取图片的地址
-		loadImg(imgUrl,function(imgUrlg){
-			$img.attr('src',imgUrl)
-		},function(){
-			$img.attr('src','images/focus-carousel/placeholder.png')
-		});
-		item[index] = 'loaded';
-		totalLoadedNum++;
-		//判断是否所有的图片都加载完毕，如果加载完毕移除监听事件
-		if(totalLoadedNum == totalNum){
-			$coursel.trigger('coursel-loaded')
-		}
-	})
-	//加载完毕
-	$coursel.on('coursel-loaded',function(){
-		$coursel.off('coursel-show',fnLoaded);
-	})
+	courselLazyLoad($coursel);
 	$coursel.coursel({});
 
 // 焦点区域轮播图区域-----------------------------------------结束
 
 // 今日热销区域-----------------------------------------开始
 	var $todayCoursel = $('.todays .carousel-wrap');
+	courselLazyLoad($todayCoursel);
 	$todayCoursel.coursel({});
 // 今日热销区域-----------------------------------------结束
 })(jQuery);
