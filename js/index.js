@@ -178,12 +178,9 @@
 			var $imgs = $this.find('.carousel-img');	//找到每个图片
 			$imgs.each(function(){
 				var $img = $(this);
-				console.log($img);
 				var imgUrl = $img.data('src');			//获取图片的地址
 				loadImg(imgUrl,function(imgUrlg){
 					$img.attr('src',imgUrl)
-					console.log(imgUrl);
-
 				},function(){
 					$img.attr('src','images/focus-carousel/placeholder.png')
 				});
@@ -198,7 +195,7 @@
 		})
 		//加载完毕
 		$elem.on('coursel-loaded',function(){
-			$elem.off('coursel-show',$elem.fnLoaded);
+			$coursel.off('coursel-show',$elem.fnLoaded);
 		})
 	}
 

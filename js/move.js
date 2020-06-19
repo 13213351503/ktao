@@ -3,11 +3,13 @@
 		this.$elem = $elem;
 		this.$elem.removeClass('transition');
 		//获取初始值
-		this.currentX = parseInt(this.$elem.css('left'));
-		this.currentY = parseInt(this.$elem.css('top'));
+		this.currentX = parseFloat(this.$elem.css('left'));
+		this.currentY = parseFloat(this.$elem.css('top'));
 	};
 	function to(x,y,callback){
+		//每次移动前判断是否达到目标值
 		if(this.currentX == x && this.currentY == y) return;
+		
 		this.$elem.trigger('move');		//自定义事件移入前
 		callback();
 		//更新初始值
@@ -26,6 +28,7 @@
 					top:y,
 					left:x
 				});
+				//移动后执行
 				this.$elem.trigger('moved');
 			}.bind(this));
 		},
@@ -63,7 +66,9 @@
 		}else{
 			move = new Slient($elem);
 		};
-		return move
+		return {
+			to:move.to.bind(move)
+		}
 		
 	}
 
@@ -77,7 +82,7 @@
 				if(!moveObj){// 第一次调用能进来
 					options = $.extend({},DEFAULT,options);
 					//2.获取显示隐藏的方法
-					moveObj = getmove($elem,options);
+					var moveObj = getmove($elem,options);
 					//将显示隐藏方法存到当前dom节点上
 					$elem.data('moveObj',moveObj);
 				}
