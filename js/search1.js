@@ -162,7 +162,6 @@
 		url:'https://suggest.taobao.com/sug?code=utf-8&q=',		//默认请求固定地址
 		delatGetData:300
 	}
-	//https://suggest.taobao.com/sug?code=utf-8&q=dd&_ksTS=1591882631944_958&callback=jsonp959&k=1&area=c2c&bucketid=7
 	$.fn.extend({
 		search:function(options,val){
 			return this.each(function(){

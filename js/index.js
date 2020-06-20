@@ -200,7 +200,7 @@
 	}
 
 
-	var $coursel = $('.carousel .carousel-wrap');
+	var $coursel = $('.focus .carousel-wrap');
 	courselLazyLoad($coursel);
 	$coursel.coursel({});
 

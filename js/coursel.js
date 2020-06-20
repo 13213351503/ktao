@@ -5,10 +5,10 @@
 		this.$courselItem = this.$elem.find('.carousel-item');
 		this.$courselBtn = this.$elem.find('.btn-item');
 		this.$courselControl = this.$elem.find('.control');
-		this.itemLength = this.$courselBtn.length;
+		this.itemLength = this.$courselItem.length;
 		this.time = null;
 
-		this.now = this.options.activeIndex;
+		this.now = this._getCorrentIndex(this.options.activeIndex);
 		this.init();
 	}
 
@@ -145,7 +145,7 @@
 
 	Coursel.DEFAULT = {
 		slide:true,
-		activeIndex:1,
+		activeIndex:0,
 		js:true,
 		mode:'fade',
 		autotime:0
