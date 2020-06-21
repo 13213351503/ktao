@@ -34,7 +34,51 @@
 			img.src = imgUrl;
 		},300)
 		
-	}
+	};
+
+
+
+	function getDataOnce($elem,url,callback){
+		var data = $elem.data('url');
+		if(!data){
+			$.getJSON(url,function(resData){
+				$elem.data('url',resData);
+				callback(resData);
+			})
+		}else{
+			callback(data);
+		}
+	};
+
+
+	function lazyLoad(options){
+		var item = {},
+			totalLoadedNum = 0,
+			totalNum = options.totalNum,
+			fnLoad = null,
+			$elem = options.$elem,
+			eventName = options.eventName,
+			eventPrefix = options.eventPrefix;
+		//1.开始加载
+		$elem.on(eventName,fnLoad = function(ev,index,elem){
+			if(!item[index]){
+				$elem.trigger(eventPrefix+'-load',[index,elem,function(){
+					//图片加载完毕
+					item[index] = 'loaded';
+					totalLoadedNum++;
+					//判断是否所有图片加载完毕,如果加载完毕则移出监听的事件
+					if(totalLoadedNum == totalNum){
+						$elem.trigger('coursel-loaded')
+					}
+				}]);
+			}
+		})
+		//3.加载完毕
+		$elem.on(eventPrefix+'-loaded',function(){
+			$elem.off(eventName,fnLoad);
+		})
+	};
+
 
 
 /*顶部下拉菜单开始*/
@@ -211,4 +255,235 @@
 	courselLazyLoad($todayCoursel);
 	$todayCoursel.coursel({});
 // 今日热销区域-----------------------------------------结束
+
+
+// 楼层区域-----------------------------------------开始
+	// //楼层图片懒加载
+	// function floorImageLazyLoad($elem){
+	// 	$elem.item = {};//{0:loaded,1:loaded}
+	// 	$elem.totalLoadedNum = 0;
+	// 	$elem.totalNum = $elem.find('.floor-img').length;
+	// 	$elem.fnLoad = null;
+	// 	//1.开始加载
+	// 	$elem.on('tab-show',$elem.fnLoad = function(ev,index,elem){
+	// 		if(!$elem.item[index]){
+	// 			$elem.trigger('tab-load',[index,elem]);
+	// 		}
+	// 	})
+	// 	//2.执行加载
+	// 	$elem.on('tab-load',function(ev,index,elem){
+	// 		var $this = $(elem);
+	// 		var $imgs = $this.find('.floor-img');
+	// 		$imgs.each(function(){
+	// 			var $img = $(this);
+	// 			var imgUrl = $img.data('src');
+	// 			loadImg(imgUrl,function(imgUrl){
+	// 				$img.attr('src',imgUrl);
+	// 			},function(){
+	// 				$img.attr('src','image/focus-carousel/placeholder.png');
+	// 			});
+	// 			//图片加载完毕
+	// 			$elem.item[index] = 'loaded';
+	// 			$elem.totalLoadedNum++;
+	// 			//判断是否所有图片加载完毕,如果加载完毕则移出监听的事件
+	// 			if($elem.totalLoadedNum == $elem.totalNum){
+	// 				$elem.trigger('tab-loaded')
+	// 			}
+	// 		})
+			
+	// 	})
+	// 	//3.加载完毕
+	// 	$elem.on('tab-loaded',function(){
+	// 		$elem.off('tab-show',$elem.fnLoad);
+	// 	})
+	// }
+
+
+	// var $floor = $('.floor');
+	// //遍历每一个楼层实现图片懒加载
+	// $floor.each(function(){
+	// 	floorImageLazyLoad($(this));
+	// })
+
+	// $floor.tab({})
+
+
+
+	//楼层HTML懒加载
+	function buildFloorHtml(oneFloorData){
+		var html = '';
+		html += '<div class="container">';
+		html += buildFloorHeaderHtml(oneFloorData);
+		html += buildFloorBodyHtml(oneFloorData);
+		html += '</div>';
+		return html;
+	}
+	function buildFloorHeaderHtml(oneFloorData){
+		var html = '';
+		html += '<div class="floor-hd">';
+		html +=	'	<h2 class="floor-title fl">';
+		html +=	'		<span class="floor-title-num">'+oneFloorData.num+'F</span>';
+		html +=	'		<span class="floor-title-text">'+oneFloorData.text+'</span>';
+		html +=	'	</h2>';
+		html +=	'	<ul class="tab-item-wrap fr">';
+		for(var i = 0;i<oneFloorData.tabs.length;i++){
+		html +=	'		<li class="fl">';
+		html +=	'			<a class="tab-item" href="javascript:;">'+oneFloorData.tabs[i]+'</a>';
+		html +=	'		</li>';
+			if(i != oneFloorData.tabs.length -1){
+				html += '<li class="fl tab-divider"></li>';
+			}
+		}
+		html +=	'	</ul>';
+		html +=	'</div>';
+
+		return html;
+	}
+	function buildFloorBodyHtml(oneFloorData){
+		var html = '';
+		 	html += '<div class="floor-bd">';
+			for(var i = 0;i<oneFloorData.items.length;i++){
+			html += '	<ul class="tab-panel clearfix">';
+				for(var j = 0;j<oneFloorData.items[i].length;j++){
+					html += '		<li class="floor-item fl">';
+					html += '			<p class="floor-item-pic">';
+					html += '				<a href="#">';
+					html += '					<img class="floor-img" src="images/floor/loading.gif" data-src="images/floor/'+oneFloorData.num+'/'+(i+1)+'/'+(j+1)+'.png" alt="">';
+					html += '				</a>';
+					html += '			</p>';
+					html += '			<p class="floor-item-name">';
+					html += '				<a class="link" href="#">'+oneFloorData.items[i][j].name+'</a>';
+					html += '			</p>';
+					html += '			<p class="floor-item-price">￥'+oneFloorData.items[i][j].price+' </p>';
+					html += '		</li>';
+				}
+			html += '	</ul>';
+			}
+			html += '</div>';
+		return html;
+	}
+
+	//判断楼层是否进入到可视区 
+	function isVisible($elem){
+		return ($win.height()+$win.scrollTop()>$elem.offset().top) && ($elem.height()+$elem.offset().top > $win.scrollTop());
+	}
+
+	var $floor = $('.floor');
+	var $win = $(window);
+	var $doc = $(document);
+	lazyLoad({
+		$elem:$doc,
+		totalNum:$floor.length,
+		eventName:'floor-show',
+		eventPrefix:'floor'
+	});
+	//楼层HTML懒加载:执行加载
+	$doc.on('floor-load',function(ev,index,elem,success){
+		//1.加载数据
+		getDataOnce($doc,'data/floor/floorData.json',function(data){
+			var html = buildFloorHtml(data[index]);
+			//2.生成HTML结构并插入到楼层中
+			$(elem).html(html)
+			//3.实现楼层图片懒加载
+			lazyLoad({
+				$elem:$(elem),
+				totalNum:$(elem).find('.floor-img').length,
+				eventName:'tab-show',
+				eventPrefix:'tab'
+			});
+			//图片懒加载:执行加载
+			$(elem).on('tab-load',function(ev,index,elem,success){
+				var $this = $(elem);
+				var $imgs = $this.find('.floor-img');
+				$imgs.each(function(){
+					var $img = $(this);
+					var imgUrl = $img.data('src');
+					loadImg(imgUrl,function(imgUrl){
+						$img.attr('src',imgUrl);
+					},function(){
+						$img.attr('src','image/focus-carousel/placeholder.png');
+					});
+					//加载成功执行函数
+					success()
+				})
+			})
+			//4.激活选项卡
+			$(elem).tab({})
+		})
+		//HTML加载完毕
+		success()
+	})
+	//遍历每一个楼层判断是否在可视区
+	function timeShow(){
+		$floor.each(function(index,elem){
+			if(isVisible($(elem))){
+				$doc.trigger('floor-show',[index,elem]);
+			}
+		})
+	}
+	
+	$win.on('load resize scroll',function(){
+		clearTimeout($doc.floorTimer);
+		$doc.floorTimer = setTimeout(timeShow,300)
+	})
+
+
+// 楼层区域-----------------------------------------结束
+
+
+
+/*电梯逻辑--------------------开始*/
+	var $elevator = $('#elevator');
+	var $elevatorItems = $('.elevator-item');
+
+	//获取当前显示电梯号
+	function getElevator(){
+		var num = -1;
+		$floor.each(function(index,elem){
+			num = index;
+			if($(elem).offset().top > $win.scrollTop() + $win.height()/2){
+				num = index - 1;
+				return false;
+			}
+		})
+		return num;
+	}
+	//设置电梯
+	function setElevator(){
+		var num =	getElevator();
+		if(num == -1){
+			$elevator.fadeOut();
+		}else{
+			$elevator.fadeIn();
+			//移出所有class
+			$elevatorItems.removeClass('elevator-active');
+			//当前电梯选中状态
+			$elevatorItems.eq(num).addClass('elevator-active');
+		} 
+	}
+	$win.on('load resize scroll',function(){
+		clearTimeout($elevator.elevatorShowTimer);
+		$elevator.elevatorShowTimer = setTimeout(setElevator,200)
+	})
+	//事件代理监听点击电梯到达指定楼层
+	$elevator.on('click','.elevator-item',function(){
+		var index = $elevatorItems.index(this);
+		$('html,body').animate({
+			scrollTop:$floor.eq(index).offset().top
+		})
+	})
+
+/*电梯逻辑--------------------结束*/
+
+/*工具条逻辑--------------------开始*/
+	var $toTop = $('#backToTop');
+	$toTop.on('click',function(){
+		$('html,body').animate({
+			scrollTop:0
+		})
+	})
+
+/*工具条逻辑--------------------结束*/
+
+
 })(jQuery);
